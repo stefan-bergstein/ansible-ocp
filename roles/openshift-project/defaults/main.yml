@@ -1,0 +1,10 @@
+---
+# defaults file for openshift-project
+
+# To-Do: Use vault!
+openshift_admin_user: "kubeadmin" 
+openshift_admin_password: "jh3kL-Te6cD-BKDG7-3rvSu"
+
+openshift_url:  https://api.crc.testing:6443
+validate_certs: no
+

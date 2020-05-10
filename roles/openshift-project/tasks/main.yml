@@ -1,0 +1,54 @@
+---
+- block:
+  - name: Log in (obtain access token)
+    k8s_auth:
+      username: "{{ openshift_admin_user }}"
+      password: "{{ openshift_admin_password }}"
+      host: "{{ openshift_url }}" 
+      validate_certs: "{{ validate_certs | default('no') }}"
+    register: k8s_auth_results
+
+
+  - name: Create OpenShift Project
+    k8s:
+      state: "{{ state | default('present') }}"
+      wait: true
+      api_key: "{{ k8s_auth_results.k8s_auth.api_key }}"
+      definition:
+        kind: Project
+        apiVersion: project.openshift.io/v1
+        metadata:
+          name: "{{PROJECT|mandatory}}"
+          labels:
+            cost-center: B6-100
+          annotations:
+            openshift.io/description: "{{PROJECT|mandatory}}"
+            openshift.io/display-name: "{{PROJECT|mandatory}}"
+            openshift.io/requester:  "{{REQUESTER|mandatory}}"
+
+  - name: Grant access to project
+    k8s:
+      state: "{{ state | default('present') }}"
+      definition:
+          kind: RoleBinding
+          apiVersion: rbac.authorization.k8s.io/v1
+          metadata:
+            creationTimestamp: null
+            namespace: "{{PROJECT|mandatory}}"
+            name: admin
+          roleRef:
+            apiGroup: rbac.authorization.k8s.io
+            kind: ClusterRole
+            name: admin
+          subjects:
+          - kind: User
+            apiGroup: rbac.authorization.k8s.io
+            name: "{{REQUESTER|mandatory}}"
+  always:
+  - name: If login succeeded, try to log out (revoke access token)
+    when: k8s_auth_results.k8s_auth.api_key is defined
+    k8s_auth:
+      state: absent
+      host: "{{ openshift_url }}"
+      validate_certs: "{{ validate_certs | default('no') }}"
+      api_key: "{{ k8s_auth_results.k8s_auth.api_key }}"

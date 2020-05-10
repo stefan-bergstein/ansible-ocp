@@ -1,0 +1,10 @@
+---
+- name: Create OpenShift Project.
+  hosts: localhost 
+  gather_facts: false
+ 
+
+  roles:
+  - role: openshift-project
+
+
