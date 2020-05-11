@@ -10,7 +10,7 @@ Few tests with Ansible and OCP
 
 Create:
 ```
-ansible-playbook create-project.yml --extra-vars PROJECT=test2-project --extra-vars REQUESTER=developer --extra-vars
+ansible-playbook create-project.yml --extra-vars PROJECT=test2-project --extra-vars REQUESTER=developer
 ```
 
 
