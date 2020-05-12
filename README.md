@@ -14,7 +14,7 @@ ansible-playbook create-project.yml --extra-vars PROJECT=test2-project --extra-v
 ```
 
 
-Detele:
+Delete:
 ```
 ansible-playbook create-project.yml --extra-vars PROJECT=test2-project --extra-vars REQUESTER=developer --extra-vars state=absent
 ```
